@@ -1,0 +1,29 @@
+CPP = mpicxx
+OPTFLAGS=  -Wall -O2 -DMPICH_IGNORE_CXX_SEEK
+# include files
+INC_HDF5 = 
+# libs
+LIB_HDF5 = 
+
+HDF5LIBS = -lhdf5 -lhdf5_hl 
+MPELIB = -lmpe
+
+
+FluKin: FluKin.cpp Particles3Dcomm.o Particles3D.o ConfigFile.o
+	${CPP} ${OPTFLAGS} -o FluKin ${INC_HDF5} ${INC_MPI} \
+	FluKin.cpp Particles3Dcomm.o Particles3D.o ConfigFile.o ${LIB_HDF5} ${LIB_MPI} ${HDF5LIBS} ${MPELIB}
+
+FluKin.o: FluKin.cpp
+	${CPP} ${OPTFLAGS} ${INC_HDF5} ${INC_MPI} -c FluKin.cpp 
+
+ConfigFile.o: ./ConfigFile/src/ConfigFile.cpp
+	${CPP} ${OPTFLAGS} -c ./ConfigFile/src/ConfigFile.cpp
+
+Particles3Dcomm.o: ./particles/Particles3Dcomm.cpp
+	${CPP} ${OPTFLAGS} ${INC_HDF5} -c ./particles/Particles3Dcomm.cpp
+
+Particles3D.o: ./particles/Particles3D.cpp 
+	${CPP} ${OPTFLAGS} ${INC_HDF5} -c ./particles/Particles3D.cpp
+
+clean:
+	rm -rf *.o FluKin
